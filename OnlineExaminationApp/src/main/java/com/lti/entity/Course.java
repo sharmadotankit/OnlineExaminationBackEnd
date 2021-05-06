@@ -3,6 +3,7 @@ package com.lti.entity;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,6 +19,8 @@ public class Course {
 	@SequenceGenerator(name="ol_course_seq",initialValue=3000,allocationSize=1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "ol_course_seq")
 	int courseId;
+	
+	@Column(unique = true)
 	String courseName;
 	
 	@OneToMany(mappedBy = "course",cascade = CascadeType.ALL)
