@@ -13,6 +13,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name="Ol_Exam")
 public class Exam {
@@ -31,9 +33,7 @@ public class Exam {
 	List<Question> question;
 	
 	
-
-	
-
+	@JsonIgnore
 	public List<Question> getQuestion() {
 		return question;
 	}

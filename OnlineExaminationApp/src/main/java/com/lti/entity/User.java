@@ -13,6 +13,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name="Ol_User")
 public class User {
@@ -43,6 +45,8 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
+	@JsonIgnore
 	public List<Enrollment> getEnrollments() {
 		return enrollments;
 	}

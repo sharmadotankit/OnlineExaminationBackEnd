@@ -12,6 +12,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name="Ol_Enrollment")
 public class Enrollment {
@@ -47,6 +49,7 @@ public class Enrollment {
 		this.levelOfUser = levelOfUser;
 	}
 
+
 	public User getUser() {
 		return user;
 	}
@@ -54,6 +57,7 @@ public class Enrollment {
 	public void setUser(User user) {
 		this.user = user;
 	}
+
 
 	public Course getCourse() {
 		return course;
@@ -63,6 +67,7 @@ public class Enrollment {
 		this.course = course;
 	}
 
+	@JsonIgnore
 	public List<Report> getReport() {
 		return report;
 	}

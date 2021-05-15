@@ -12,6 +12,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name="Ol_Course")
 public class Course {
@@ -29,8 +31,7 @@ public class Course {
 	@OneToMany(mappedBy = "course",cascade = CascadeType.ALL)
 	List<Exam> exam;
 
-	
-	
+	@JsonIgnore
 	public List<Exam> getExam() {
 		return exam;
 	}
@@ -38,6 +39,7 @@ public class Course {
 	public void setExam(List<Exam> exam) {
 		this.exam = exam;
 	}
+
 
 	public int getCourseId() {
 		return courseId;
@@ -55,6 +57,7 @@ public class Course {
 		this.courseName = courseName;
 	}
 
+	@JsonIgnore
 	public List<Enrollment> getEnrollment() {
 		return enrollment;
 	}

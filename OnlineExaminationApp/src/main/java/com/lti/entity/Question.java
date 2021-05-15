@@ -8,6 +8,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name="Ol_Question")
 public class Question {
@@ -81,6 +83,7 @@ public class Question {
 		this.correctOption = correctOption;
 	}
 
+	@JsonIgnore
 	public Exam getExam() {
 		return exam;
 	}

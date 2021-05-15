@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lti.entity.Course;
+import com.lti.entity.Enrollment;
+import com.lti.entity.Question;
+import com.lti.entity.Report;
 import com.lti.entity.User;
 import com.lti.repository.OnlineExamRepositoryImplementation;
 
@@ -49,6 +52,50 @@ public class OnlineExamServiceImpl implements OnlineExamService {
 	@Override
 	public List<Course> getAllCourses() {
 		return olDao.getAllCourses();
+	}
+
+	public Enrollment enrollUserToACourse(int userId, int courseId) {
+		return olDao.enrollUserToACourse(userId, courseId);
+	}
+
+	@Override
+	public List<Enrollment> getEnrollmentByUserId(int userId) {
+		return olDao.getEnrollmentByUserId(userId);
+	}
+
+	@Override
+	public int getExamIdByLevelAndCourseId(int level, int courseId) {
+		return olDao.getExamIdByLevelAndCourseId(level, courseId);
+	}
+
+	@Override
+	public Enrollment getEnrollmentByUserIdAndCourseId(int userId, int courseId) {
+		return olDao.getEnrollmentByUserIdAndCourseId(userId, courseId);
+	}
+
+	@Override
+	public int getExamIdByCourseIdAndLevel(int courseId, int level) {
+		return olDao.getExamIdByCourseIdAndLevel(courseId, level);
+	}
+
+	@Override
+	public List<Question> getQuestionsForExamId(int examId) {
+		return olDao.getQuestionsForExamId(examId);
+	}
+
+	@Override
+	public Report generateReport(Report report) {
+		return olDao.generateReport(report);
+	}
+
+	@Override
+	public Enrollment updateLevelOfUser(Enrollment enrollment) {
+		return olDao.updateLevelOfUser(enrollment);
+	}
+
+	@Override
+	public List<Report> viewAllReports() {
+		return olDao.viewAllReports();
 	}
 
 }
