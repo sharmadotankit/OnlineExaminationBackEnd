@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.lti.dto.LoginDto;
+import com.lti.dto.ResetPasswordDto;
+import com.lti.dto.ViewReportsDto;
 import com.lti.entity.Course;
 import com.lti.entity.Enrollment;
 import com.lti.entity.Question;
@@ -31,7 +33,7 @@ public class OnlineExamController {
 			return null;
 		}
 		User userPersisted =  olService.registerOrUpdateUser(user);
-//		olService.sendEmailOnRegistration(userPersisted);
+		olService.sendEmailOnRegistration(userPersisted);
 		return userPersisted;	
 	}
 	
@@ -103,11 +105,55 @@ public class OnlineExamController {
 	}
 	
 	
-	//http://localhost:9090/viewallreports
-	@GetMapping(value = "viewallreports")
-	public List<Report> viewAllReports(){
+	//http://localhost:9090/viewreports
+	@GetMapping(value = "viewreports")
+	public List<Report> viewReports(){
 		return olService.viewAllReports();
 	}
 	
+	
+	//http://localhost:9090/getcourseidbycoursename
+	@GetMapping(value="getcourseidbycoursename")
+	public int getCourseIdByCourseName(@RequestParam String courseName) {
+		return olService.getCourseIdByCourseName(courseName);
+	}
+	
+	//http://localhost:9090/getquestionbycoursenameandlevel
+	@GetMapping(value = "getquestionbycoursenameandlevel")
+	public List<Question> getQuestionByCourseNameAndLevel(@RequestParam String courseName , @RequestParam int level){
+		return olService.getQuestionByCourseNameAndLevel(courseName, level);
+	}
+	
+	
+	//http://localhost:9090/addquestion
+	@PostMapping(value="addquestion")
+	public Question addQuestion(@RequestBody Question questionObj , @RequestParam String courseName,@RequestParam int level) {
+		return olService.addQuestion(questionObj, courseName, level);
+	}
+	
+	
+	//http://localhost:9090/removequestionbyquestionid
+	@PutMapping(value="removequestionbyquestionid")
+	public boolean removeQuestion(@RequestParam int questionId) {
+		return olService.removeQuestionByQuestionId(questionId);
+	}
+	
+	//http://localhost:9090/sendmailforresetpassword
+	@PostMapping(value="sendmailforresetpassword")
+	public boolean sendMailForRestPassword(@RequestParam String emailOfUser){
+		if(olService.getAllRegisteredEmails().contains(emailOfUser)) {
+			olService.sendMailForRestPassword(emailOfUser);
+			return true;
+		}
+		return false;
+	}
+	
+	
+	//http://localhost:9090/resetpassword
+	@PostMapping(value="resetpassword",produces="text/plain")
+	public String resetPassword(@RequestBody ResetPasswordDto resetPasswordDto) {
+		System.out.println(resetPasswordDto.getEmail()+" "+resetPasswordDto.getPassword()+" "+resetPasswordDto.getOtp());
+		return olService.resetPassword(resetPasswordDto.getEmail(),resetPasswordDto.getPassword(),resetPasswordDto.getOtp());
+	}
 	
 }

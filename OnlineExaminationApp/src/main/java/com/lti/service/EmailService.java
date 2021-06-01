@@ -26,12 +26,11 @@ public class EmailService {
 		message.setSubject(subject);
 		message.setText(text.toString());
 		mailSender.send(message);
-
 	}
 	
 	public void sendEmailForForgetPassword(String email,String subject,String text) {
 		SimpleMailMessage message = new SimpleMailMessage();
-		message.setFrom("sightcitytravelspvt@gmail.com");
+		message.setFrom("hexadecimalcodetest@gmail.com");
 		message.setTo(email);
 		message.setSubject(subject);
 		message.setText(text);

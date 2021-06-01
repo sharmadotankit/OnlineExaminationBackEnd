@@ -9,6 +9,7 @@ import com.lti.entity.Course;
 import com.lti.entity.Enrollment;
 import com.lti.entity.Question;
 import com.lti.entity.Report;
+import com.lti.entity.Status;
 import com.lti.entity.User;
 import com.lti.repository.OnlineExamRepositoryImplementation;
 
@@ -94,8 +95,46 @@ public class OnlineExamServiceImpl implements OnlineExamService {
 	}
 
 	@Override
-	public List<Report> viewAllReports() {
+	public List<Report> viewAllReports(){
 		return olDao.viewAllReports();
+	}
+
+	@Override
+	public int getCourseIdByCourseName(String courseName) {
+		return olDao.getCourseIdByCourseName(courseName);
+	}
+	
+	public List<Question> getQuestionByCourseNameAndLevel(String courseName, int level){
+		return olDao.getQuestionByCourseNameAndLevel(courseName, level);
+	}
+	
+	public boolean removeQuestionByQuestionId(int questionId) {
+		return olDao.removeQuestionByQuestionId(questionId);
+	}
+
+	@Override
+	public Question addQuestion(Question question, String courseName, int level) {
+		return olDao.addQuestion(question, courseName, level);
+	}
+
+	@Override
+	public boolean sendMailForRestPassword(String emailOfUser) {
+		User user = olDao.getUserByEmail(emailOfUser);
+		String otp = olDao.generateOtp(user.getUserId());
+		String subject = "OTP to reset your password at Hexadecimal Code";
+		String text = "Hello "+user.getUserName()
+					+", \n Please enter the given otp to reset your password.\n\n"
+					+"Your otp is : "+ user.getOneTimePassword()
+					+"\n This otp is valid for 10 minutes only."
+					+"\n\n\n\n (Do not disclose the otp to anyone)";
+		emailservice.sendEmailForForgetPassword(emailOfUser, subject, text);
+		System.out.println("Mail sent");
+		return false;
+	}
+
+	@Override
+	public String resetPassword(String email,String password,String otp) {
+		return olDao.resetPassword(email,password,otp);
 	}
 
 }

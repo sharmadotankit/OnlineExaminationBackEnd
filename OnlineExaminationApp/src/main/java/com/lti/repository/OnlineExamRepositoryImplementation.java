@@ -6,6 +6,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import org.springframework.stereotype.Repository;
@@ -178,12 +179,137 @@ public class OnlineExamRepositoryImplementation implements OnlineExamRepository 
 		return persistedEnrollment;
 	}
 
+	
+	@Override
+	public int getCourseIdByCourseName(String courseName) {
+		String jpql = "select courseId from Course c where courseName=:cnm";
+		TypedQuery<Integer> query = em.createQuery(jpql,Integer.class);
+		query.setParameter("cnm", courseName);
+		Integer courseId = query.getSingleResult();
+		return courseId;
+	}
+	
+	
 	@Override
 	public List<Report> viewAllReports() {
-		String jpql = "select r from Report r where";
+		String jpql = "select r from Report r";
 		TypedQuery<Report> query = em.createQuery(jpql, Report.class);
 		List<Report> reports = query.getResultList();
 		return reports;
 	}
+
+	@Override
+	public List<Question> getQuestionByCourseNameAndLevel(String courseName, int level) {
+		int courseId = getCourseIdByCourseName(courseName);
+		String jpql= "select q from Question q where q.exam.course.courseId=:cid and q.exam.level=:lvl";
+		TypedQuery<Question> query = em.createQuery(jpql,Question.class);
+		query.setParameter("cid", courseId);
+		query.setParameter("lvl", level);
+		List<Question> questions = query.getResultList();
+		return questions;
+	}
+
+	@Transactional
+	public boolean removeQuestionByQuestionId(int questionId) {
+		String jpql="delete from Question q where q.questionId=:qid";
+		Query query = em.createQuery(jpql);
+		query.setParameter("qid", questionId);
+		if(query.executeUpdate()==1) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	@Transactional
+	public Question addQuestion(Question question, String courseName, int level) {
+		int courseId = getCourseIdByCourseName(courseName);
+		int examId = getExamIdByCourseIdAndLevel(courseId, level);
+		Exam exam = em.find(Exam.class, examId);
+		question.setExam(exam);
+		
+		Question persistedQuestion = em.merge(question);
+		return persistedQuestion;
+	}
+
+	@Override
+	public User getUserByEmail(String emailOfUser) {
+		String jpql = "select u from User u where u.userEmail=:eou";
+		TypedQuery<User> query = em.createQuery(jpql,User.class);
+		query.setParameter("eou", emailOfUser);
+		User user = query.getSingleResult();
+		return user;
+	}
+
+	@Transactional
+	public String resetPassword(String email,String password,String otp) {
+		User user = getUserByEmail(email);
+		if(user.getOneTimePassword().equals(otp)) {
+			if(System.currentTimeMillis()>user.getOtpRequestedTime()+(10*60*1000)) {
+				return "OTP expired";
+			}
+			else {
+				User persistedUser = null;
+				try {
+					MessageDigest md = MessageDigest.getInstance("MD5");
+					md.reset();
+					byte[] b = md.digest(password.getBytes());
+					
+					// Convert byte array into signum representation
+					BigInteger no = new BigInteger(1, b);
+					
+					// Convert message digest into hex value
+					String hashtext = no.toString(16);
+					while (hashtext.length() < 32) {
+						hashtext = "0" + hashtext;
+					}
+					user.setPassword(hashtext);
+					user.setOneTimePassword("0");
+					persistedUser = em.merge(user);
+					
+				}
+
+				// For specifying wrong message digest algorithms
+				catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+				if(persistedUser==null) {
+					return "Failed to reset password";
+				}
+				else {
+					return "Password reset successful";
+				}
+			}
+		}
+		else {
+			return "Otp is wrong";
+		}
+		
+		
+	}
+
+	@Transactional
+	public String generateOtp(int userId) {
+		System.out.println("In repository : "+userId);
+		User user = em.find(User.class, userId);
+		String characters = "0123456789abcdefghijklmnopqrstuvwxyz+#@$";
+		String otp  = "";
+		for(int i=0;i<8;i++){
+			int index = (int) Math.floor(Math.random()*40);
+			otp+=characters.charAt(index);
+		}
+		
+		long requestedTime = System.currentTimeMillis();
+		System.out.println(requestedTime);
+		System.out.println(otp);
+	
+		user.setOneTimePassword(otp);
+		user.setOtpRequestedTime(requestedTime);
+		registerOrUpdateUser(user);
+		
+		return null;
+	}
+
 
 }

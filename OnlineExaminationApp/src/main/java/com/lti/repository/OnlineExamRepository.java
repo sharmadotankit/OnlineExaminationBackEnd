@@ -5,6 +5,7 @@ import com.lti.entity.Course;
 import com.lti.entity.Enrollment;
 import com.lti.entity.Question;
 import com.lti.entity.Report;
+import com.lti.entity.Status;
 import com.lti.entity.User;
 
 public interface OnlineExamRepository {
@@ -20,6 +21,12 @@ public interface OnlineExamRepository {
 	public List<Question> getQuestionsForExamId(int examId);
 	public Report generateReport(Report report);
 	public Enrollment updateLevelOfUser(Enrollment enrollment);
+	public int getCourseIdByCourseName(String courseName);
 	public List<Report> viewAllReports();
-	
+	public List<Question> getQuestionByCourseNameAndLevel(String courseName, int level);
+	public boolean removeQuestionByQuestionId(int questionId);
+	public Question addQuestion(Question question,String courseName,int level);
+	public User getUserByEmail(String emailOfUser);
+	public String resetPassword(String email,String password,String otp);
+	public String generateOtp(int userId);
 }

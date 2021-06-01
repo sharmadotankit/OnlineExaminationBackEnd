@@ -20,10 +20,21 @@ public class Report {
 	int reportId;
 	int score;
 	Status status;
+	int levelPassed;
 	
 	@ManyToOne
 	@JoinColumn(name = "enrollmentId")
 	Enrollment enrollment;
+
+	
+	
+	public int getLevelPassed() {
+		return levelPassed;
+	}
+
+	public void setLevelPassed(int levelPassed) {
+		this.levelPassed = levelPassed;
+	}
 
 	public int getReportId() {
 		return reportId;

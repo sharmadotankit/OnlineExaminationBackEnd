@@ -2,7 +2,6 @@ package com.lti.entity;
 
 import java.time.LocalDate;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,12 +32,57 @@ public class User {
 	LocalDate dateOfBirth;
 	LocalDate dateOfCompletion;
 	String password;
+
 	
 	@OneToMany(mappedBy = "user",cascade=CascadeType.ALL)
 	List<Enrollment> enrollments;
 	
+	//	variable and method related to Otp
+//	private static final long OTP_VALID_DURATION = 5 * 60 * 1000;
+	
+	 String oneTimePassword;
+
+	 Long otpRequestedTime;
+	
+//	public boolean isOTPRequired() {
+//        if (this.getOneTimePassword() == null) {
+//            return false;
+//        }
+//         
+//        long currentTimeInMillis = System.currentTimeMillis();
+//        long otpRequestedTimeInMillis = this.otpRequestedTime.getTime();
+//         
+//        if (otpRequestedTimeInMillis + OTP_VALID_DURATION < currentTimeInMillis) {
+//            // OTP expires
+//            return false;
+//        }
+//         
+//        return true;
+//    }
+	 
+	 
 	
 	
+	 
+	 
+	public String getOneTimePassword() {
+		return oneTimePassword;
+	}
+
+	public Long getOtpRequestedTime() {
+		return otpRequestedTime;
+	}
+
+	public void setOtpRequestedTime(Long otpRequestedTime) {
+		this.otpRequestedTime = otpRequestedTime;
+	}
+
+	public void setOneTimePassword(String oneTimePassword) {
+		this.oneTimePassword = oneTimePassword;
+	}
+
+	
+
 	public String getPassword() {
 		return password;
 	}
